@@ -1,0 +1,29 @@
+name: 'walmart_pipeline'
+version: '1.0.0'
+config-version: 2
+
+profile: 'walmart_pipeline'
+
+model-paths: ["models"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  walmart_pipeline:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
+    # When Gold models exist, decide then whether they need their own
+    # marts subfolder or a separate top-level folder - not worth deciding
+    # before there's a single Gold model to base that on. Whichever it is,
+    # it'll need +schema: GOLD (see README's schema-mapping note).

@@ -1,0 +1,58 @@
+version: 2
+
+models:
+  - name: store_dim
+    description: >
+      SCD1 store dimension - one current row per (store_id, dept_id)
+      combination. Grain is store+dept, not store alone: store_type/
+      store_size repeat across every dept row for the same store.
+    columns:
+      - name: store_id
+        tests: [not_null]
+      - name: dept_id
+        tests: [not_null]
+      # No single-column `unique` test on either column alone - the grain
+      # is the (store_id, dept_id) pair. dbt's built-in `unique` test only
+      # covers one column; a real composite-uniqueness test would need the
+      # dbt_utils package (dbt_utils.unique_combination_of_columns), which
+      # zing
+      # dbt_utils later if you want the test coverage too.
+
+  - name: date_dim
+    description: SCD1 date dimension - one current row per date_id (YYYYMMDD).
+    columns:
+      - name: date_id
+        tests: [unique, not_null]
+
+  - name: sales_fact
+    description: SCD2 sales fact at store+dept+date_id grain, versioned via snap_sales.
+    columns:
+      - name: store_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('store_dim')
+                field: store_id
+      - name: dept_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('store_dim')
+                field: dept_id
+          # Note: these two relationships tests check store_id and dept_id
+          # exist independently in store_dim - not that the *pair* exists
+          # together there. A real composite FK check needs dbt_utils
+          # (see the store_dim note above). Good enough to catch orphaned
+          # values; won't catch a store_id/dept_id combo that doesn't
+          # actually co-occur in store_dim.
+      - name: date_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('date_dim')
+                field: date_id
+      - name: vrsn_start_date
+        tests: [not_null]

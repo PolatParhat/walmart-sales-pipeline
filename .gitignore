@@ -1,0 +1,16 @@
+# dbt build artifacts - regenerated on every run, not source
+walmart_dbt/target/
+walmart_dbt/logs/
+walmart_dbt/dbt_packages/
+
+# dbt connection profile - this should already live outside the project
+# entirely (in ~/.dbt/profiles.yml per SETUP.md), but exclude it here too
+# as a safety net in case a real copy ever ends up inside the project
+profiles.yml
+
+# Snowflake key-pair auth files - never commit private keys
+*.p8
+*.pem
+
+# OS noise
+.DS_Store

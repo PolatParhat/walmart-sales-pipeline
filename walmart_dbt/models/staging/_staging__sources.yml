@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: raw
+    database: WALMART_DEV
+    schema: RAW
+    tables:
+      - name: stores_raw
+        config:
+          loaded_at_field: _loaded_at
+          freshness:
+            warn_after: {count: 24, period: hour}
+            error_after: {count: 48, period: hour}
+
+      - name: fact_raw
+        config:
+          loaded_at_field: _loaded_at
+          freshness:
+            warn_after: {count: 24, period: hour}
+            error_after: {count: 48, period: hour}
+
+      - name: department_raw
+        config:
+          loaded_at_field: _loaded_at
+          freshness:
+            warn_after: {count: 24, period: hour}
+            error_after: {count: 48, period: hour}

@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: int_sales_combined
+    description: >
+      Intermediate model - joins stg_department, stg_fact, stg_stores, and
+      date_dim together to prep the store+dept+date_id grain that the
+      SCD2 snapshot versions. Not a business-defined entity on its own, so
+      it lives here rather than in marts/ (dbt Labs: intermediate models
+      "prepare staging models for marts," named with the int_ prefix, in
+      their own intermediate/ folder). Not meant to be queried directly.
+    columns:
+      - name: store_id
+        data_tests: [not_null]
+      - name: dept_id
+        data_tests: [not_null]
+      - name: date_id
+        data_tests: [not_null]
